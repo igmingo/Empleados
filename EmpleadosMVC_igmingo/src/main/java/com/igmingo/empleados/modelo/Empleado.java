@@ -40,7 +40,7 @@ public class Empleado  implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Integer idEmpleado;
+	 private Integer idEmpleado;
      private Puesto puesto;
      private Departamento departamento;
      private String nombre;
@@ -95,7 +95,7 @@ public class Empleado  implements java.io.Serializable {
     public Departamento getDepartamento() {
         return this.departamento;
     }
-    
+
     public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
     }
@@ -147,9 +147,6 @@ public class Empleado  implements java.io.Serializable {
     public void setEmpleadoProyectos(Set<EmpleadoProyecto> empleadoProyectos) {
         this.empleadoProyectos = empleadoProyectos;
     }
-
-
-
 
 }
 

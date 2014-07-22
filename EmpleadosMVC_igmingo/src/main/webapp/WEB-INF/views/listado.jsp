@@ -12,7 +12,7 @@
 <body>
 	Buscar:
 	<input type="text" id="txtBuscar" placeholder="Pon tu búsqueda">
-	<input type="button" id="btnBuscar" value="Buscar">
+	<input type="button" id="btnBuscar" value="Buscar"  onclick="buscar()">
 	<table id="tblDatos">
 		<c:forEach items="${empleados }" var="empleado">
 			<tr>
@@ -24,37 +24,57 @@
 				<td><a href="#" id="lnkDetalle"
 					onclick="evento(${empleado.idEmpleado})"> Ver detalles con Ajax
 				</a></td>
+								<td><a href="#" id="lnkBorrar"
+					onclick="borrar(${empleado.idEmpleado})"> Borrar
+				</a></td>
+				
+				
 			</tr>
 		</c:forEach>
 	</table>
 	<div id="divDetalle">
 	</div>
-	<script type="text/javascript">
-function eventobad(id){
-	var url="empleado/"+id;
-	//La funcion get de JQuery, tiene dos parametros, el destino url, y como segundo parámetro
-	//la funcion a la que tiene que llamar, cuando termine. Res el el JSON devuelto.
-	//las funciones son variables en Javascript.
-	
-	//hace una llamada Ajax por el metodo GET a la url, y ejecuta la función 
-	//con la información devueleta del GET.
-	$.get(url,function(res){
-		var resultado="<ul>";
-		resultado+="<li>"+res.nombre+"</li>";
-		resultado+="<li>"+res.salario+"</li>";
-		resultado+="<li>"+res.puesto.nombre+"</li>";
-		resultado+="<li>"+res.departamento.nombre+"</li></ul>";
-
- 		//El como el getelementobyid, coge el elemento de nombre divDetalle
-		//y le ponemos el html llamado 'resultado'
-		$("#divDetalle").html(resultado);
-		
-		});
-}
-</script>
 <script type="text/javascript">
+
+function borrar() {
+	//Crea un objeto JSON del tipo atributo : valor
+	var datos={idEmpleado:id};
+	//Para convertir un objeto en string
+	var datosPasar=JSON.stringify(datos);
+
+	//$.get y $.post existen, para todo lo demás $.ajax para implementar otras
+	$.ajax (
+			//URL del metodo AJAX
+			"empleado",{
+			//OBJETO JSON con los parametros que vamos a pasar
+				//el el JSON que quermos pasar en string
+				data:datosPasar,
+				// es el metodo que vamos a pasar en este caso DELETE
+				method: "DELETE",
+				// el tipo de contenido que pasamos es un JSON
+				contentType: "application/json",
+				//son funciones para el control de errores
+				//si tiene exito vamo a hacer una alerta
+				sucess: function(res) {
+					alert("Empleado borrado correctamente");
+					$("#txtBuscar").text("");
+					},
+					//si tiene error, decir el JSON
+				error: function(res){
+					alert(JSON.stringify(res));
+					}
+				}
+			);
+}
+
+
 function buscar() {
 	var tx=$("#txtBuscar").val();
+	if(tx=="") {
+		tx="NoBuscoNada";
+	}
+
+	
 	var url="empleado/buscar/"+tx;
 
 	$.get(url, function (res){
@@ -72,6 +92,7 @@ function buscar() {
 			h+="<td>" + res[i].salario+"</td>";
 			h+="<td><a href='detalle.html?id="+res[i].idEmpleado+"'></a>";
 			h+="<a href='#' onclick='evento("+res[i].idEmpleado+")'>Detalle Ajax</a></td>";
+			h+="<a href='#' onclick='borrar("+res[i].idEmpleado+")'>Borrar</a></td>";
 			h+="</tr>";
 			tabla.append(h);			
 			}

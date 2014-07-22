@@ -7,13 +7,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.igmingo.empleados.modelo.Empleado;
 import com.igmingo.empleados.repositorios.RepositorioEmpleados;
-
 
 // ESTA ES NUESTRA API REST
 @Controller
@@ -41,11 +41,30 @@ public class EmpleadoRestController {
 	
 	@RequestMapping (method=RequestMethod.GET, value="/buscar/{texto}")
 	public @ResponseBody List<Empleado> buscar(@PathVariable String texto) {
+		
+		if(texto.equals("NoBuscoNada"))
+			texto="";
+		
 		Map<String, Object> params=new HashMap();
-		params.put(texto, "%" + texto + "%");
+		params.put("texto", "%" + texto + "%");
 		List<Empleado> le=dao.find("empleado.buscador", params);
 
 		return le;
+	}
+	
+	//en el cuerpo de EmpleadoRestControllerla petición se encuentra el objeto empleado
+	//el value no hace falta pues lo coge del  EmpleadoRestController
+	//	get -> consulta
+	//	post -> insert
+	//	put -> actualizaciones
+	//	delete -> borrado
+	
+	@RequestMapping(method=RequestMethod.DELETE)
+	public @ResponseBody String borrar(@RequestBody Empleado empleado) {
+
+		dao.delete(empleado);
+		
+		return "borrado";
 	}
 	
 }
